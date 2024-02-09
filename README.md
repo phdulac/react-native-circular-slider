@@ -1,1 +1,1 @@
-# react-native-circular-slider
+# @phdulac/react-native-circular-slider

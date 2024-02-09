@@ -1,3 +1,7 @@
+import React, { useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import CircularSlider from "@phdulac/react-native-circular-slider";
+
 export default function App() {
   const [value, setValue] = useState(50);
   return (

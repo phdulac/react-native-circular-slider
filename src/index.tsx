@@ -7,18 +7,13 @@ import {
 } from "react-native";
 import Svg, { Circle, Defs, LinearGradient, Stop } from "react-native-svg";
 
-const { height } = Dimensions.get("window");
+const { height } = Dimensions.get('window');
 
+const CIRCLE_RADIUS = 150;
 const VIEWBOX = 400;
 
 // Function to find the nearest point on a circle from a given point
-function getNearestPointOnCircle(
-  cx: number,
-  cy: number,
-  r: number,
-  px: number,
-  py: number
-) {
+function getNearestPointOnCircle(cx: number, cy: number, r: number, px: number, py: number) {
   // Step 2: Calculate the vector from circle center to the given point
   let vx = px - cx;
   let vy = py - cy;
@@ -73,11 +68,7 @@ function getCartesianPointFromAngle(
   return { x, y };
 }
 
-function convertDegreesToUnit(
-  degreesValue: number,
-  minUnitValue: number,
-  maxUnitValue: number
-) {
+function convertDegreesToUnit(degreesValue: number, minUnitValue: number, maxUnitValue: number) {
   // Calculate the number of full rotations made by the slider
   const fullRotations = Math.floor(degreesValue / 360);
 
@@ -96,11 +87,7 @@ function convertDegreesToUnit(
   return unitValue;
 }
 
-function convertUnitToDegrees(
-  unitValue: number,
-  minUnitValue: number,
-  maxUnitValue: number
-) {
+function convertUnitToDegrees(unitValue: number, minUnitValue: number, maxUnitValue: number) {
   // Calculate the range of the new unit
   const unitRange = maxUnitValue - minUnitValue;
 
@@ -125,19 +112,10 @@ const convertUnitToCartesianPoint = (
   radius: number
 ) => {
   // Convert the unit to degrees
-  const degreesValue = convertUnitToDegrees(
-    unitValue,
-    minUnitValue,
-    maxUnitValue
-  );
+  const degreesValue = convertUnitToDegrees(unitValue, minUnitValue, maxUnitValue);
 
   // Convert the angle to a cartesian point
-  const point = getCartesianPointFromAngle(
-    centerX,
-    centerY,
-    radius,
-    degreesValue
-  );
+  const point = getCartesianPointFromAngle(centerX, centerY, radius, degreesValue);
 
   return point;
 };
@@ -153,11 +131,7 @@ const convertCartesianPointToUnit = (
   const degreesValue = getAngleFromCenter(centerX, centerY, point.x, point.y);
 
   // Convert the angle to a unit value
-  const unitValue = convertDegreesToUnit(
-    degreesValue,
-    minUnitValue,
-    maxUnitValue
-  );
+  const unitValue = convertDegreesToUnit(degreesValue, minUnitValue, maxUnitValue);
 
   return unitValue;
 };
@@ -165,32 +139,43 @@ const convertCartesianPointToUnit = (
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 /**
- * Circular slider to show in room and device view. It is used to set the temperature in manual mode
+ * Circular slider to show that show a tick mark on the circle
  */
 const CircularSlider = ({
   onUpdate,
   value,
   minValue = 0,
   maxValue = 100,
-  startColor,
-  endColor,
-  circleStroke = 13,
-  circleRadius = 150,
+  trackStyle = {
+    backgroundColor: 'transparent',
+    backgroundGradient: ['#d3d3d3', '#e24EF5'],
+    width: 15,
+  },
+  thumbStyle = {
+    backgroundColor: 'white',
+    size: 20,
+  },
 }: {
   onUpdate: (t: number) => void;
   value: number;
   minValue?: number;
   maxValue?: number;
   circleStroke?: number;
-  circleRadius?: number;
-  startColor: string;
-  endColor: string;
+  trackStyle?: {
+    backgroundColor?: string;
+    backgroundGradient?: [string, string];
+    width: number;
+  };
+  thumbStyle?: {
+    backgroundColor?: string;
+    size: number;
+  };
 }) => {
   const centerPoint = { x: VIEWBOX / 2, y: VIEWBOX / 2 };
   const circleRef = useRef<Circle>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const [temperature, setTemperature] = useState(0);
+  const [currentValue, setCurrentValue] = useState(0);
 
   // If state change from outside, update the position
   useEffect(() => {
@@ -201,18 +186,18 @@ const CircularSlider = ({
       maxValue,
       centerPoint.x,
       centerPoint.y,
-      circleRadius - circleStroke
+      CIRCLE_RADIUS - trackStyle.width
     );
     setPosition(_pos);
-    setTemperature(value);
+    setCurrentValue(value);
     animation.current.setValue(_pos);
   }, []);
 
   const animation = useRef(new Animated.ValueXY(position));
 
-  // When position change due to user interaction, update the temperature
+  // When position change due to user interaction, update the currentValue
   useEffect(() => {
-    setTemperature(() => {
+    setCurrentValue(() => {
       const t = convertCartesianPointToUnit(
         position,
         centerPoint.x,
@@ -235,7 +220,7 @@ const CircularSlider = ({
           const point = getNearestPointOnCircle(
             centerPoint.x,
             centerPoint.y,
-            circleRadius - circleStroke,
+            CIRCLE_RADIUS - trackStyle.width,
             event.nativeEvent?.locationX,
             event.nativeEvent?.locationY
           );
@@ -246,13 +231,13 @@ const CircularSlider = ({
             minValue,
             maxValue
           );
-          if (temperature >= maxValue - 0.1) {
+          if (currentValue >= maxValue - 0.1) {
             if (futureValue < maxValue && futureValue > maxValue - 0.5) {
               return point;
             } else {
               return prev;
             }
-          } else if (temperature <= minValue + 0.1) {
+          } else if (currentValue <= minValue + 0.1) {
             if (futureValue > minValue && futureValue < minValue + 0.5) {
               return point;
             } else {
@@ -272,54 +257,43 @@ const CircularSlider = ({
   return (
     <View
       style={{
-        position: "relative",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
         width: Math.min(height / 2.2, 400),
         height: Math.min(height / 2.2, 400),
-      }}
-    >
+      }}>
       <Svg
         style={{
-          position: "absolute",
+          position: 'absolute',
         }}
         width="100%"
         height="100%"
-        viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`}
-      >
+        viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`}>
         <Defs>
           <LinearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="100%">
-            <Stop offset="0%" stopColor={startColor} />
-            <Stop offset="100%" stopColor={endColor} />
+            <Stop offset="0%" stopColor={trackStyle?.backgroundGradient?.[0]} />
+            <Stop offset="100%" stopColor={trackStyle?.backgroundGradient?.[1]} />
           </LinearGradient>
         </Defs>
 
         <Circle
           id="path"
           ref={circleRef}
-          fill="url(#linear)"
+          stroke={trackStyle?.backgroundColor ?? 'url(#linear)'}
+          fill={'transparent'}
+          strokeWidth={trackStyle?.width}
           cx={centerPoint?.x}
           cy={centerPoint?.y}
-          r={circleRadius}
-        />
-
-        <Circle
-          id="path"
-          ref={circleRef}
-          fill="white"
-          cx={centerPoint?.x}
-          cy={centerPoint?.y}
-          r={circleRadius - circleStroke * 2}
+          r={CIRCLE_RADIUS - trackStyle?.width}
         />
 
         <AnimatedCircle
-          testID={"animated-circle"}
-          r={circleStroke - 1}
-          strokeWidth={4}
-          fill="white"
-          id="circ"
+          testID={'animated-circle'}
+          r={thumbStyle.size}
+          fill={thumbStyle.backgroundColor}
           cx={animation?.current?.x}
           cy={animation?.current?.y}
           onMoveShouldSetResponder={() => true}

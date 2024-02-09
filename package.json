@@ -1,11 +1,12 @@
 {
-  "name": "react-native-circular-slider",
-  "version": "1.0.0",
+  "name": "@phdulac/react-native-circular-slider",
+  "version": "1.0.1",
   "description": "A React Native component displaying a slider in an circle arc",
   "main": "lib/commonjs/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "bob build"
+    "prepare": "bob build",
+    "example": "cd example && yarn start"
   },
   "author": "phdulac",
   "license": "ISC",
@@ -15,7 +16,7 @@
     "react-native": "^0.73.4",
     "react-native-svg": "^14.1.0",
     "typescript": "^5.3.3",
-    "react-native-circular-slider": "file:./test"
+    "@phdulac/react-native-circular-slider": "file:./test"
   },
   "devDependencies": {
     "@types/react": "^18.2.55",
