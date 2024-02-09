@@ -12,14 +12,14 @@ Install the package using npm:
 
 ```bash
 npm install @phdulac/react-native-circular-slider
-``````
+```
 
 ## Usage
 Here is a basic example of how to use the CircularSlider component:
     
 ```javascript
 import React from 'react';
-import CircularSlider from 'react-native-circular-slider';
+import CircularSlider from '@phdulac/react-native-circular-slider';
 
 function MyComponent() {
   const [value, setValue] = React.useState(0);
@@ -43,7 +43,7 @@ export default MyComponent;
 
 In this example, the CircularSlider component is controlled by the value state variable. The onUpdate prop is a function that is called whenever the user changes the value of the slider.
 
-##Props
+## Props
 The CircularSlider component accepts the following props:
 
 - onUpdate: A function that is called whenever the user changes the value of the slider.
