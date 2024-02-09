@@ -1,0 +1,11 @@
+{
+  "name": "react-native-circular-slider",
+  "version": "1.0.0",
+  "description": "A React Native component displaying a slider in an circle arc",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
