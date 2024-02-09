@@ -2,10 +2,47 @@
   "name": "react-native-circular-slider",
   "version": "1.0.0",
   "description": "A React Native component displaying a slider in an circle arc",
-  "main": "index.js",
+  "main": "lib/commonjs/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "bob build"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "phdulac",
+  "license": "ISC",
+  "homepage": "#readme",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-native": "^0.73.4",
+    "react-native-svg": "^14.1.0",
+    "typescript": "^5.3.3",
+    "react-native-circular-slider": "file:./test"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.55",
+    "react-native-builder-bob": "^0.23.2"
+  },
+  "react-native": "src/index.tsx",
+  "source": "src/index.tsx",
+  "module": "lib/module/index.js",
+  "types": "lib/typescript/src/index.d.ts",
+  "files": [
+    "src",
+    "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ]
 }
