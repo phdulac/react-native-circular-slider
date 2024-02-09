@@ -140,6 +140,14 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 /**
  * Circular slider to show that show a tick mark on the circle
+ * @phdulac
+ * @param onUpdate - function to call when the value change
+ * @param value - current value
+ * @param minValue - minimum value
+ * @param maxValue - maximum value
+ * @param trackStyle - style of the track
+ * @param thumbStyle - style of the thumb
+ * @returns
  */
 const CircularSlider = ({
   onUpdate,

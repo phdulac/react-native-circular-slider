@@ -10,7 +10,11 @@
   },
   "author": "phdulac",
   "license": "ISC",
-  "homepage": "#readme",
+  "homepage": "https://github.com/phdulac/react-native-circular-slider#readme",
+  "repository": {
+    "type": "git",
+    "url:": "https://github.com/phdulac/react-native-circular-slide.git"
+  },
   "dependencies": {
     "react": "^18.2.0",
     "react-native": "^0.73.4",
